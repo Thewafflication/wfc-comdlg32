@@ -93,3 +93,59 @@ endif()
 if(COMMAND wsp_enable_hardening)
   wsp_enable_hardening(wfc_comdlg32)
 endif()
+
+# --- Tests --------------------------------------------------------------------
+# The table (any build) and, in the shared build, the DLL itself: a C program
+# loads wfccomdlg32.dll, checks its COM entry points and version resource, and
+# registers and unregisters it in the registry of the current user.
+if(BUILD_TESTING AND WFC_BUILD_TESTS AND WIN32)
+  add_executable(comdlg32_tables_test tests/comdlg32_tables_test.cpp)
+  target_link_libraries(comdlg32_tables_test PRIVATE wfc_comdlg32)
+  if(WFC_COMDLG32_SHARED)
+    # Next to the DLL, so the program finds it.
+    set_target_properties(
+      comdlg32_tables_test
+      PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    )
+  endif()
+  target_compile_features(comdlg32_tables_test PRIVATE cxx_std_20)
+  if(COMMAND wfc_enable_strict_warnings)
+    wfc_enable_strict_warnings(comdlg32_tables_test)
+  endif()
+  if(COMMAND wsp_enable_hardening)
+    wsp_enable_hardening(comdlg32_tables_test)
+  endif()
+  add_test(NAME TC-MP0010-comdlg32-tables COMMAND comdlg32_tables_test)
+  set_tests_properties(
+    TC-MP0010-comdlg32-tables
+    PROPERTIES LABELS "unit;mp-0010;comdlg32"
+  )
+
+  if(WFC_COMDLG32_SHARED)
+    enable_language(C)
+    add_executable(comdlg32_dll_test tests/comdlg32_dll_test.c)
+    target_link_libraries(comdlg32_dll_test PRIVATE version advapi32)
+    add_dependencies(comdlg32_dll_test wfc_comdlg32)
+    if(MSVC)
+      target_compile_options(comdlg32_dll_test PRIVATE /W4 /WX)
+    else()
+      target_compile_options(comdlg32_dll_test PRIVATE -Wall -Wextra -Werror)
+    endif()
+    if(COMMAND wsp_enable_hardening)
+      wsp_enable_hardening(comdlg32_dll_test)
+    endif()
+    add_test(
+      NAME TC-MP0010-comdlg32-dll
+      COMMAND
+        comdlg32_dll_test "$<TARGET_FILE:wfc_comdlg32>" "${WFC_COMDLG32_VERSION}"
+        "${WFC_LIB_TARGET}"
+    )
+    set_tests_properties(
+      TC-MP0010-comdlg32-dll
+      PROPERTIES
+        LABELS "integration;mp-0010;comdlg32"
+        RESOURCE_LOCK registry
+        SKIP_RETURN_CODE 77
+    )
+  endif()
+endif()
