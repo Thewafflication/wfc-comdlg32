@@ -174,3 +174,37 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
     )
   endif()
 endif()
+
+# --- WebAssembly demo ---------------------------------------------------------
+# With Emscripten the member table also builds as a module and a page that lists
+# the classes (web/index.html); CI opens the page in Chromium for the README
+# screenshot.
+if(EMSCRIPTEN)
+  file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/TARGET" WFC_WEB_TARGET LIMIT_COUNT 1)
+  add_executable(comdlg32_web web/wasm_api.cpp)
+  target_link_libraries(comdlg32_web PRIVATE wfc_comdlg32)
+  target_compile_features(comdlg32_web PRIVATE cxx_std_20)
+  target_compile_definitions(
+    comdlg32_web
+    PRIVATE
+      WFC_WEB_VERSION="${WFC_COMDLG32_VERSION}"
+      WFC_WEB_TARGET="${WFC_WEB_TARGET}"
+  )
+  set_target_properties(comdlg32_web PROPERTIES OUTPUT_NAME comdlg32 SUFFIX .js)
+  target_link_options(
+    comdlg32_web
+    PRIVATE
+      -sMODULARIZE=1
+      -sEXPORT_NAME=create_comdlg32
+      "-sEXPORTED_FUNCTIONS=['_library_name','_library_version','_library_target','_class_count','_class_name','_member_count','_event_count','_member_name','_event_name']"
+      "-sEXPORTED_RUNTIME_METHODS=['ccall','UTF8ToString']"
+      -sENVIRONMENT=web,node
+  )
+  add_custom_command(
+    TARGET comdlg32_web
+    POST_BUILD
+    COMMAND
+      "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/web/index.html"
+      "$<TARGET_FILE_DIR:comdlg32_web>/index.html"
+  )
+endif()
