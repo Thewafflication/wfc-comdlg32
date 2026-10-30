@@ -1,0 +1,6 @@
+LIBRARY wfccomdlg32
+EXPORTS
+    DllRegisterServer PRIVATE
+    DllUnregisterServer PRIVATE
+    DllCanUnloadNow PRIVATE
+    DllGetClassObject PRIVATE

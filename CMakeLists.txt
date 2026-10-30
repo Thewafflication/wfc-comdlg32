@@ -39,6 +39,16 @@ if(WFC_COMDLG32_SHARED AND WIN32)
   list(GET version_parts 1 WFC_LIB_VERSION_MINOR)
   list(GET version_parts 2 WFC_LIB_VERSION_PATCH)
   set(WFC_LIB_VERSION "${WFC_COMDLG32_VERSION}")
+  file(
+    STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/TARGET"
+    WFC_LIB_TARGET
+    LIMIT_COUNT 1
+  )
+  configure_file(
+    src/registration_info.hpp.in
+    "${CMAKE_CURRENT_BINARY_DIR}/registration_info.hpp"
+    @ONLY
+  )
   set(WFC_LIB_NAME wfccomdlg32)
   set(WFC_LIB_DESCRIPTION "WFC Common Dialog")
   configure_file(
@@ -50,8 +60,12 @@ if(WFC_COMDLG32_SHARED AND WIN32)
     wfc_comdlg32
     SHARED
     ${WFC_COMDLG32_SOURCES}
+    src/registration.cpp
+    src/wfccomdlg32.def
     "${CMAKE_CURRENT_BINARY_DIR}/wfccomdlg32.rc"
   )
+  target_include_directories(wfc_comdlg32 PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+  target_link_libraries(wfc_comdlg32 PRIVATE advapi32)
   target_compile_definitions(
     wfc_comdlg32
     PUBLIC WFC_COMDLG32_SHARED
