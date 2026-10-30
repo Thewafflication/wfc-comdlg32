@@ -1,0 +1,7 @@
+answer open cancel
+answer color &H00FF00FF&
+answer font Courier New,12,1,0
+click cmdOpen
+click cmdColor
+click cmdFont
+pump 500
