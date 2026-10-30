@@ -143,7 +143,7 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
   add_test(NAME TC-MP0010-comdlg32-tables COMMAND comdlg32_tables_test)
   set_tests_properties(
     TC-MP0010-comdlg32-tables
-    PROPERTIES LABELS "unit;mp-0010;comdlg32"
+    PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
   if(WIN32 AND WFC_COMDLG32_SHARED)
