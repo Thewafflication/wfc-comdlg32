@@ -92,6 +92,31 @@ jobs:
           set -o pipefail
           ctest --test-dir out/winelib --output-on-failure 2>&1 | tee out/test.txt
 
+      - name: Screenshots of the dialogs under Wine
+        if: matrix.arch == 'x64'
+        continue-on-error: true
+        run: |
+          sudo apt-get install -y xvfb imagemagick
+          mkdir -p docs/images
+          winegcc -mwindows -o out/dialogs_demo.exe examples/wine/dialogs_demo.c             -lcomdlg32 -luser32 -lgdi32
+          export WINEDEBUG=-all
+          xvfb-run -a -s "-screen 0 800x600x24" bash -c '
+            wineboot -u > /dev/null 2>&1
+            for dialog in open color font; do
+              bash scripts/linux_screenshot.sh out/$dialog.png 10                 wine out/dialogs_demo.exe $dialog
+            done'
+          for dialog in open color font; do
+            convert out/$dialog.png -fuzz 2% -trim +repage out/$dialog-trim.png
+          done
+          convert out/open-trim.png out/color-trim.png out/font-trim.png             -background '#202020' -gravity center +append             docs/images/linux-dialogs.png
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.arch == 'x64'
+        continue-on-error: true
+        with:
+          name: linux-dialogs
+          path: docs/images/linux-dialogs.png
+
       - name: Screenshot of the session
         if: always()
         run: |
