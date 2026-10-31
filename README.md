@@ -27,6 +27,15 @@ wfc run examples/dialogs/dialogs.vbp --gui
 
 The images are made with `wfc run ... --gui --screenshots <dir>`.
 
+### Linux (Wine)
+
+![The Open, Color and Font dialogs of Windows, running under Wine on Linux](docs/images/linux-dialogs.png)
+
+The dialogs the Common Dialog control opens (`ShowOpen`, `ShowColor`,
+`ShowFont`), shown by `examples/wine/dialogs_demo.c` built with Wine's
+`winegcc` and photographed in a virtual display by the CI job
+(`scripts/linux_screenshot.sh`).
+
 ### Linux (Winelib)
 
 ![wfc-comdlg32 built and tested on Linux x64 with Winelib](docs/images/linux-winelib-x64.png)
