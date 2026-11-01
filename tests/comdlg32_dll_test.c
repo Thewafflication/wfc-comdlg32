@@ -9,6 +9,12 @@ static const struct wfc_check_class kClasses[] = {
 };
 
 int main(int argc, char** argv) {
-    return wfc_check_dll(argc, argv, L"comdlg32", kClasses,
-                         sizeof(kClasses) / sizeof(kClasses[0]));
+    int checked = wfc_check_dll(argc, argv, L"comdlg32", kClasses,
+                                sizeof(kClasses) / sizeof(kClasses[0]));
+    if (checked != 0) {
+        return checked;
+    }
+    return wfc_check_create(wfc_check_widen(argv[1]),
+                            L"{CF6A2C7A-4FCB-5C54-9568-046A730724E8}",
+                            L"CancelError", L"ShowColor");
 }

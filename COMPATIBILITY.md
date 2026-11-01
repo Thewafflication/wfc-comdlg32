@@ -23,7 +23,7 @@ status is tracked in WFC until the behaviour moves into this library (see the
 | --- | --- | --- |
 | ProgID and class id | `WFC.MSComDlg.<Class>`, a fixed UUID per class | `MSComDlg.<Class>`, the Microsoft class id |
 | Selected by | the default | `WFC_REGISTER_MICROSOFT_IDS=1` (the previous server is saved and restored on unregister) |
-| COM creation | `DllGetClassObject` reports the class as not available | n/a |
+| COM creation | `DllGetClassObject` gives a class factory; the object is a table-driven IDispatch (properties stored, methods accepted) | n/a |
 
 ## Known gaps
 
