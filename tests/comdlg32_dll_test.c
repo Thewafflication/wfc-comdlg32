@@ -4,10 +4,8 @@
 #include "dll_check.h"
 
 static const struct wfc_check_class kClasses[] = {
-    {L"WFC.MSComDlg.CommonDialog",
-     L"{CF6A2C7A-4FCB-5C54-9568-046A730724E8}",
-     L"MSComDlg.CommonDialog.1",
-     L"{F9043C85-F6F2-101A-A3C9-08002B2F49FB}"},
+    {L"WFC.MSComDlg.CommonDialog", L"{CF6A2C7A-4FCB-5C54-9568-046A730724E8}",
+     L"MSComDlg.CommonDialog.1", L"{F9043C85-F6F2-101A-A3C9-08002B2F49FB}"},
 };
 
 int main(int argc, char** argv) {

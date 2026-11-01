@@ -1,6 +1,6 @@
 // Member table of the native replacement for the Common Dialog (`comdlg32.ocx`,
-// library MSComDlg). Written by hand from the documented members of the control;
-// there is no type-library evidence for it.
+// library MSComDlg). Written by hand from the documented members of the
+// control; there is no type-library evidence for it.
 
 #include <wfc/comdlg32/comdlg32.hpp>
 

@@ -2,8 +2,8 @@
 #
 # The member table is written by hand from the documented members.
 # The table is built static by default; WFC_COMDLG32_SHARED builds it as
-# wfccomdlg32.dll so a program can load it at run time instead. The version is the
-# one in VERSION and is stamped into the DLL's version resource.
+# wfccomdlg32.dll so a program can load it at run time instead. The version is
+# the one in VERSION and is stamped into the DLL's version resource.
 #
 # Parent project variables used when present: WFC_OCX_SHARED (the default of
 # WFC_COMDLG32_SHARED) and the functions wfc_enable_strict_warnings and
@@ -162,8 +162,8 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
     add_test(
       NAME TC-MP0010-comdlg32-dll
       COMMAND
-        comdlg32_dll_test "$<TARGET_FILE:wfc_comdlg32>" "${WFC_COMDLG32_VERSION}"
-        "${WFC_LIB_TARGET}"
+        comdlg32_dll_test "$<TARGET_FILE:wfc_comdlg32>"
+        "${WFC_COMDLG32_VERSION}" "${WFC_LIB_TARGET}"
     )
     set_tests_properties(
       TC-MP0010-comdlg32-dll
@@ -180,7 +180,11 @@ endif()
 # the classes (web/index.html); CI opens the page in Chromium for the README
 # screenshot.
 if(EMSCRIPTEN)
-  file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/TARGET" WFC_WEB_TARGET LIMIT_COUNT 1)
+  file(
+    STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/TARGET"
+    WFC_WEB_TARGET
+    LIMIT_COUNT 1
+  )
   add_executable(comdlg32_web web/wasm_api.cpp)
   target_link_libraries(comdlg32_web PRIVATE wfc_comdlg32)
   target_compile_features(comdlg32_web PRIVATE cxx_std_20)
@@ -191,12 +195,25 @@ if(EMSCRIPTEN)
       WFC_WEB_TARGET="${WFC_WEB_TARGET}"
   )
   set_target_properties(comdlg32_web PROPERTIES OUTPUT_NAME comdlg32 SUFFIX .js)
+  set(
+    WFC_WEB_NAMES
+    library_name
+    library_version
+    library_target
+    class_count
+    class_name
+    member_count
+    event_count
+    member_name
+    event_name
+  )
+  string(JOIN "','_" WFC_WEB_EXPORTS ${WFC_WEB_NAMES})
   target_link_options(
     comdlg32_web
     PRIVATE
       -sMODULARIZE=1
       -sEXPORT_NAME=create_comdlg32
-      "-sEXPORTED_FUNCTIONS=['_library_name','_library_version','_library_target','_class_count','_class_name','_member_count','_event_count','_member_name','_event_name']"
+      "-sEXPORTED_FUNCTIONS=['_${WFC_WEB_EXPORTS}']"
       "-sEXPORTED_RUNTIME_METHODS=['ccall','UTF8ToString']"
       -sENVIRONMENT=web,node
   )
