@@ -7,15 +7,10 @@
 
 namespace {
 
-[[nodiscard]] std::string file_title(const std::string& path) {
-    const auto at = path.find_last_of("/\\");
-    return at == std::string::npos ? path : path.substr(at + 1U);
-}
-
 // The user cancelled: an error when CancelError is set.
 [[nodiscard]] bool dialog_cancelled(ControlObject& self, NativeFailure& failure) {
     if (property_flag(self, "cancelerror")) {
-        failure = NativeFailure{kCancelled, "Cancel was selected"};
+        failure = NativeFailure{wfc::comdlg32::kCancelled, "Cancel was selected"};
     }
     return true;
 }
@@ -29,7 +24,8 @@ namespace {
     request.file_name = property_text(self, "filename");
     request.filter = property_text(self, "filter");
     request.default_extension = property_text(self, "defaultext");
-    request.filter_index = std::max(1L, property_whole(self, "filterindex"));
+    request.filter_index = wfc::comdlg32::normalized_filter_index(
+        property_whole(self, "filterindex"));
     request.flags = property_whole(self, "flags");
     bool supported = true;
     auto chosen = FormSupport::runtime(in).host->file_dialog(
@@ -37,7 +33,7 @@ namespace {
     if (!supported) {
         // No dialogs: a scripted `answer open|save <path>` stands for the user.
         const auto answer = FormSupport::dialog_answer(in, save ? "save" : "open");
-        if (answer.has_value() && lower_text(*answer) != "cancel") {
+        if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
             chosen = ui::FileDialogResult{*answer, request.filter_index};
         }
     }
@@ -45,7 +41,8 @@ namespace {
         return dialog_cancelled(self, failure);
     }
     self.values["filename"] = Value{chosen->file_name};
-    self.values["filetitle"] = Value{file_title(chosen->file_name)};
+    self.values["filetitle"] =
+        Value{wfc::comdlg32::file_title(chosen->file_name)};
     self.values["filterindex"] =
         Value{static_cast<Int16>(chosen->filter_index)};
     return true;
@@ -59,7 +56,7 @@ namespace {
         property_whole(self, "flags"), supported);
     if (!supported) {
         const auto answer = FormSupport::dialog_answer(in, "color");
-        if (answer.has_value() && lower_text(*answer) != "cancel") {
+        if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
             chosen = parse_number(*answer);
         }
     }
@@ -72,11 +69,9 @@ namespace {
 
 [[nodiscard]] bool show_font_dialog(Interpreter& in, ControlObject& self,
                                     NativeFailure& failure) {
-    constexpr long kScreenFonts = 0x1;
-    constexpr long kPrinterFonts = 0x2;
     const long flags = property_whole(self, "flags");
-    if ((flags & (kScreenFonts | kPrinterFonts)) == 0) {
-        failure = NativeFailure{kNoFonts, "No fonts exist"};
+    if (!wfc::comdlg32::fonts_available(flags)) {
+        failure = NativeFailure{wfc::comdlg32::kNoFonts, "No fonts exist"};
         return true;
     }
     ui::FontDialogRequest request;
@@ -94,26 +89,15 @@ namespace {
     if (!supported) {
         // `answer font Name,Size,Bold,Italic` (Bold and Italic are 0 or 1).
         const auto answer = FormSupport::dialog_answer(in, "font");
-        if (answer.has_value() && lower_text(*answer) != "cancel") {
+        if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
             ui::FontDialogRequest scripted = request;
-            std::vector<std::string> parts;
-            std::string part;
-            std::istringstream stream(*answer);
-            while (std::getline(stream, part, ',')) {
-                parts.push_back(part);
-            }
-            if (!parts.empty()) {
-                scripted.name = parts[0];
-            }
-            if (parts.size() > 1U) {
-                scripted.size = std::atof(parts[1].c_str());
-            }
-            if (parts.size() > 2U) {
-                scripted.bold = parse_number(parts[2]) != 0;
-            }
-            if (parts.size() > 3U) {
-                scripted.italic = parse_number(parts[3]) != 0;
-            }
+            const auto font = wfc::comdlg32::scripted_font(
+                {request.name, request.size, request.bold, request.italic},
+                *answer);
+            scripted.name = font.name;
+            scripted.size = font.size;
+            scripted.bold = font.bold;
+            scripted.italic = font.italic;
             chosen = scripted;
         }
     }
@@ -187,7 +171,7 @@ std::optional<Value> Interpreter::form_dialog(
     const ui::WindowId owner = host.focus();
     bool accepted = false;
     std::string file_name = text(3);
-    long filter_index = std::max(1L, number(6));
+    long filter_index = wfc::comdlg32::normalized_filter_index(number(6));
     long color = number(8);
     std::string font_name = text(9);
     double font_size = std::max(1.0, arguments.size() > 10U ? as_double(arguments[10]) : 8.0);
@@ -213,7 +197,7 @@ std::optional<Value> Interpreter::form_dialog(
             chosen = host.file_dialog(owner, request, supported);
         }
         if (!supported) {
-            if (answer.has_value() && lower_text(*answer) != "cancel") {
+            if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
                 chosen = ui::FileDialogResult{*answer, filter_index};
             }
         }
@@ -231,7 +215,7 @@ std::optional<Value> Interpreter::form_dialog(
             chosen = host.color_dialog(owner, color, number(7), supported);
         }
         if (!supported) {
-            if (answer.has_value() && lower_text(*answer) != "cancel") {
+            if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
                 chosen = static_cast<long>(std::atof(answer->c_str()));
             }
         }
@@ -255,23 +239,15 @@ std::optional<Value> Interpreter::form_dialog(
             chosen = host.font_dialog(owner, request, supported);
         }
         if (!supported) {
-            if (answer.has_value() && lower_text(*answer) != "cancel") {
+            if (answer.has_value() && !wfc::comdlg32::answer_cancels(*answer)) {
                 ui::FontDialogRequest scripted = request;
-                std::istringstream stream(*answer);
-                std::string part;
-                int position = 0;
-                while (std::getline(stream, part, ',')) {
-                    if (position == 0) {
-                        scripted.name = part;
-                    } else if (position == 1) {
-                        scripted.size = std::atof(part.c_str());
-                    } else if (position == 2) {
-                        scripted.bold = std::atof(part.c_str()) != 0.0;
-                    } else if (position == 3) {
-                        scripted.italic = std::atof(part.c_str()) != 0.0;
-                    }
-                    ++position;
-                }
+                const auto font = wfc::comdlg32::scripted_font(
+                    {request.name, request.size, request.bold, request.italic},
+                    *answer);
+                scripted.name = font.name;
+                scripted.size = font.size;
+                scripted.bold = font.bold;
+                scripted.italic = font.italic;
                 chosen = scripted;
             }
         }

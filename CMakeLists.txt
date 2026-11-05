@@ -146,6 +146,28 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
     PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
+  add_executable(comdlg32_dialogs_test tests/dialogs_test.cpp)
+  target_link_libraries(comdlg32_dialogs_test PRIVATE wfc_comdlg32)
+  if(WFC_COMDLG32_SHARED)
+    # Next to the DLL, so the program finds it.
+    set_target_properties(
+      comdlg32_dialogs_test
+      PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    )
+  endif()
+  target_compile_features(comdlg32_dialogs_test PRIVATE cxx_std_20)
+  if(COMMAND wfc_enable_strict_warnings)
+    wfc_enable_strict_warnings(comdlg32_dialogs_test)
+  endif()
+  if(COMMAND wsp_enable_hardening)
+    wsp_enable_hardening(comdlg32_dialogs_test)
+  endif()
+  add_test(NAME TC-MP0010-comdlg32-dialogs COMMAND comdlg32_dialogs_test)
+  set_tests_properties(
+    TC-MP0010-comdlg32-dialogs
+    PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
+  )
+
   if(WIN32 AND WFC_COMDLG32_SHARED)
     enable_language(C)
     add_executable(comdlg32_dll_test tests/comdlg32_dll_test.c)
