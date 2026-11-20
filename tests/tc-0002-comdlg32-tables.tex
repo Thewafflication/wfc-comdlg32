@@ -1,0 +1,60 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% Compile from the repository root so this path resolves to the pinned WSP
+% submodule.
+\input{wsp/testing/test-case-library.tex}
+
+\begin{document}
+
+\def\TCID{TC-0002}
+\def\TCTitle{The member table lists named members of known kinds}
+\def\TCPurpose{%
+  Verify the structure of the table that the evaluator and the DLL build
+  the \texttt{CommonDialog} class from.}
+\def\TCPriority{\TCPriorityMedium}
+
+\def\TCRequirementRef{REQ-0002}
+\def\TCDesignRef{Not applicable.}
+\def\TCFeatureRef{%
+  \texttt{wfc::ui::comdlg32\_classes()} in
+  \texttt{include/wfc/comdlg32/comdlg32.hpp}; test program
+  \texttt{tests/comdlg32\_tables\_test.cpp}; CTest name
+  \texttt{TC-0002-comdlg32-tables}.}
+\def\TCTestTechnique{%
+  Structural check of every table row (exhaustive over the table).}
+
+\def\TCPreconditions{%
+  The library and the test program are built (any build type, static or
+  DLL).}
+\def\TCEnvironment{%
+  Any host that builds the library (Windows, Winelib, WebAssembly); no
+  window or registry access.}
+\def\TCAssumptions{Not applicable.}
+
+\def\TCInputData{%
+  The table returned by \texttt{comdlg32\_classes()}; the expected class
+  list is the single name \texttt{CommonDialog}.}
+\def\TCInitialState{%
+  None; the table is constant data.}
+
+\def\TCProcedure{%
+  \begin{enumerate}
+    \item Call \texttt{comdlg32\_classes()} and compare the number of
+      classes with the expected list.
+    \item For every class compare its name with the expected name and check
+      that it has at least one member.
+    \item For every member check that the name is not empty and that the
+      kind is one of \texttt{g}, \texttt{l}, \texttt{s} or \texttt{m}.
+    \item For every event check that the kind is \texttt{m}.
+  \end{enumerate}}
+\def\TCExpectedResult{%
+  The program exits with code 0 and prints
+  \texttt{comdlg32: 1 classes}. Any violated check prints \texttt{FAIL:}
+  with the reason and the program exits with code 1.}
+\def\TCPostConditions{Not applicable; the test changes nothing.}
+
+\TCTemplate
+
+\end{document}

@@ -88,5 +88,6 @@ item is present, tested and passing in CI; an unchecked one is planned.
 - [ ] 80-column source style (WSP-STYLE-0001) for the library sources; the
       generated tables are exempt. CI reports the findings meanwhile.
 - [x] The requirements are here (`requirements/`) with their test cases (`tests/corpus/`); WFC runs the corpus cases.
-- [ ] A traceability check (`wsp/tools/Test-Traceability.ps1`) in CI.
+- [x] A traceability check (`scripts/Test-Traceability.ps1`, which runs
+      `wsp/tools/Test-Traceability.ps1`) in the lint stage and in CI.
 - [ ] Windows code signing and the version resource review.

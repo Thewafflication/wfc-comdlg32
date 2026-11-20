@@ -5,7 +5,9 @@ The corpus programs here are run by [WFC](https://github.com/Thewafflication/wfc
 `NN-name.vbp` or `.bas` must print exactly the matching `.expected` text (and
 the `.debug` text, when there is one). WFC registers each as the CTest case
 `TC-MP0002-corpus-NN-name`, so the cases are kept here with the requirements
-they verify (see `requirements/`).
+they verify (see `requirements/`). Case `207-win-dialogs-classes` is the test
+case `TC-0004` of this library (`tests/tc-0004-win-dialogs-classes.tex`);
+`tests/run-tc-0004-win-dialogs-classes.ps1` runs it with a WFC executable.
 
 The C and C++ tests of the library itself are in `tests/` and run in this
 repository's CI.

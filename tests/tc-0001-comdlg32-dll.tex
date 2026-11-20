@@ -1,0 +1,91 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% Compile from the repository root so this path resolves to the pinned WSP
+% submodule.
+\input{wsp/testing/test-case-library.tex}
+
+\begin{document}
+
+\def\TCID{TC-0001}
+\def\TCTitle{The library DLL exports, versions, registers and creates}
+\def\TCPurpose{%
+  Verify that \texttt{wfccomdlg32.dll} behaves as a COM in-process server
+  for a program that knows nothing of WFC.}
+\def\TCPriority{\TCPriorityHigh}
+
+\def\TCRequirementRef{REQ-0001}
+\def\TCDesignRef{WFC planning MP-0010 (library distribution).}
+\def\TCFeatureRef{%
+  \texttt{tests/comdlg32\_dll\_test.c} with \texttt{tests/dll\_check.h};
+  CTest name \texttt{TC-0001-comdlg32-dll}.}
+\def\TCTestTechnique{%
+  Black-box functional test through the public COM entry points; statement
+  coverage of the exit paths is not measured.}
+
+\def\TCPreconditions{%
+  The library is built as a DLL (\texttt{WFC\_COMDLG32\_SHARED=ON}). The
+  registry of the current user holds neither
+  \texttt{Software\textbackslash WFC\textbackslash Libraries\textbackslash
+  comdlg32} nor the Microsoft class id of the control.}
+\def\TCEnvironment{%
+  Windows, x64 Debug, MSVC. The test writes only to the registry of the
+  current user (\texttt{HKCU}); it holds the CTest resource lock
+  \texttt{registry}.}
+\def\TCAssumptions{%
+  If the library or the Microsoft class id is already registered for the
+  user, the program exits with code 77 and CTest reports the test as
+  skipped; that is not a pass.}
+
+\def\TCInputData{%
+  The path of the DLL, the contents of \texttt{VERSION}, the contents of
+  \texttt{TARGET}; the class
+  \texttt{WFC.MSComDlg.CommonDialog} with class id
+  \texttt{\{CF6A2C7A-4FCB-5C54-9568-046A730724E8\}} and the Microsoft ProgID
+  \texttt{MSComDlg.CommonDialog.1} with class id
+  \texttt{\{F9043C85-F6F2-101A-A3C9-08002B2F49FB\}}; the property
+  \texttt{CancelError} and the method \texttt{ShowColor}.}
+\def\TCInitialState{%
+  A clean registry for the library as under Preconditions; the program is
+  started fresh by CTest.}
+
+\def\TCProcedure{%
+  \begin{enumerate}
+    \item Load the DLL with \texttt{LoadLibrary} and look up
+      \texttt{DllGetClassObject}, \texttt{DllCanUnloadNow},
+      \texttt{DllRegisterServer} and \texttt{DllUnregisterServer}.
+    \item Compare the version resource of the DLL (file version, comments)
+      with the version and target passed as arguments.
+    \item With \texttt{WFC\_REGISTER\_SCOPE=user} and
+      \texttt{WFC\_REGISTER\_MICROSOFT\_IDS=0}, call
+      \texttt{DllRegisterServer}; read back the library key and the class
+      and ProgID keys; call \texttt{DllUnregisterServer}; check that the
+      keys are gone.
+    \item When no Microsoft class id is registered for the user, repeat step
+      3 with \texttt{WFC\_REGISTER\_MICROSOFT\_IDS=1} and also check the
+      Microsoft ProgID and class id.
+    \item Ask \texttt{DllGetClassObject} for the class factory of the class,
+      create an \texttt{IDispatch} object, and check that aggregation is
+      refused with \texttt{CLASS\_E\_NOAGGREGATION}.
+    \item Set \texttt{CancelError} to the long 4242 and read it back; invoke
+      \texttt{ShowColor}; look up the name \texttt{NoSuchMemberAtAll}; release
+      the object and the factory and call \texttt{DllCanUnloadNow}.
+  \end{enumerate}}
+\def\TCExpectedResult{%
+  The program exits with code 0 and prints that exports, version and
+  registration are right and that \texttt{DllGetClassObject} makes a
+  control. In detail: all four entry points exist; the version resource
+  matches; after registration every expected key exists with the DLL as the
+  in-process server and after unregistration none remains (and what the
+  Microsoft ids replaced is restored); \texttt{CancelError} returns 4242;
+  \texttt{ShowColor} succeeds; the invented name is not found;
+  \texttt{DllCanUnloadNow} returns \texttt{S\_OK}. Any failure prints
+  \texttt{FAIL:} and exits with code 1.}
+\def\TCPostConditions{%
+  The registry of the user is as before the test (the program unregisters
+  after a failure as well).}
+
+\TCTemplate
+
+\end{document}

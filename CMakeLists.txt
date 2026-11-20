@@ -140,9 +140,9 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
   if(COMMAND wsp_enable_hardening)
     wsp_enable_hardening(comdlg32_tables_test)
   endif()
-  add_test(NAME TC-MP0010-comdlg32-tables COMMAND comdlg32_tables_test)
+  add_test(NAME TC-0002-comdlg32-tables COMMAND comdlg32_tables_test)
   set_tests_properties(
-    TC-MP0010-comdlg32-tables
+    TC-0002-comdlg32-tables
     PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
@@ -162,9 +162,9 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
   if(COMMAND wsp_enable_hardening)
     wsp_enable_hardening(comdlg32_dialogs_test)
   endif()
-  add_test(NAME TC-MP0010-comdlg32-dialogs COMMAND comdlg32_dialogs_test)
+  add_test(NAME TC-0003-comdlg32-dialogs COMMAND comdlg32_dialogs_test)
   set_tests_properties(
-    TC-MP0010-comdlg32-dialogs
+    TC-0003-comdlg32-dialogs
     PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
@@ -182,18 +182,53 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
       wsp_enable_hardening(comdlg32_dll_test)
     endif()
     add_test(
-      NAME TC-MP0010-comdlg32-dll
+      NAME TC-0001-comdlg32-dll
       COMMAND
         comdlg32_dll_test "$<TARGET_FILE:wfc_comdlg32>"
         "${WFC_COMDLG32_VERSION}" "${WFC_LIB_TARGET}"
     )
     set_tests_properties(
-      TC-MP0010-comdlg32-dll
+      TC-0001-comdlg32-dll
       PROPERTIES
         LABELS "integration;mp-0010;comdlg32"
         RESOURCE_LOCK registry
         SKIP_RETURN_CODE 77
     )
+  endif()
+endif()
+
+# --- Corpus case (standalone build) -------------------------------------------
+# TC-0004 runs a corpus program with the WFC interpreter. Inside WFC the parent
+# registers every corpus case itself, so only the standalone build adds it, and
+# only when a WFC executable is found (WFC_EXECUTABLE, WFC_EXE or PATH).
+if(
+  CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR
+  AND BUILD_TESTING
+  AND WFC_BUILD_TESTS
+)
+  set(WFC_EXECUTABLE "" CACHE FILEPATH "wfc.exe for the corpus test case")
+  if(NOT WFC_EXECUTABLE AND DEFINED ENV{WFC_EXE})
+    set(WFC_EXECUTABLE "$ENV{WFC_EXE}")
+  endif()
+  if(NOT WFC_EXECUTABLE)
+    find_program(WFC_EXECUTABLE_FOUND NAMES wfc)
+    set(WFC_EXECUTABLE "${WFC_EXECUTABLE_FOUND}")
+  endif()
+  find_program(WFC_PWSH NAMES pwsh)
+  if(WFC_EXECUTABLE AND WFC_PWSH)
+    add_test(
+      NAME TC-0004-win-dialogs-classes
+      COMMAND
+        "${WFC_PWSH}" -NoProfile -File
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/run-tc-0004-win-dialogs-classes.ps1"
+        -Wfc "${WFC_EXECUTABLE}"
+    )
+    set_tests_properties(
+      TC-0004-win-dialogs-classes
+      PROPERTIES LABELS "integration;comdlg32" TIMEOUT 120
+    )
+  else()
+    message(STATUS "TC-0004 is not registered: no wfc executable found")
   endif()
 endif()
 

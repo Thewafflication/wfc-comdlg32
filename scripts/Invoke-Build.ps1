@@ -2,8 +2,9 @@
 .SYNOPSIS
 Runs the wfc-comdlg32 canonical build stage.
 .DESCRIPTION
-Configures and builds the x64 Debug tree in out/build. CI builds the
-other architectures.
+Configures and builds the x64 Debug tree in out/build, with the library as
+wfccomdlg32.dll so the DLL test case runs too. CI builds the other
+architectures and the static library.
 .EXAMPLE
 pwsh -NoProfile -File scripts/Invoke-Build.ps1
 #>
@@ -18,7 +19,8 @@ $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 try {
     Write-Stage '[build] configure x64 Debug'
-    Invoke-CheckedCommand cmake @('-S', '.', '-B', 'out/build', '-A', 'x64')
+    Invoke-CheckedCommand cmake @('-S', '.', '-B', 'out/build', '-A', 'x64',
+        '-DWFC_COMDLG32_SHARED=ON')
     Write-Stage '[build] compile x64 Debug'
     Invoke-CheckedCommand cmake @('--build', 'out/build', '--config', 'Debug')
     Write-Output '[PASS] build x64 Debug'

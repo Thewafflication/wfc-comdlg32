@@ -8,6 +8,7 @@ docs/WSP-ADOPTION.md:
 - clang-format check mode for C++ (WSP-LANG-0002);
 - gersemi check mode for CMake (WSP-LANG-0010);
 - PowerShell syntax and PSScriptAnalyzer (WSP-LANG-0007);
+- requirement and test-case traceability (WSP-TRACE);
 - pre-commit configuration validity (WSP-CHECK-0001).
 Stops at the first failing check and exits nonzero. Changes no files.
 .EXAMPLE
@@ -61,6 +62,9 @@ try {
             Out-String | Write-Output
         throw 'PowerShell analysis failed; see findings above.'
     }
+
+    Write-Stage '[lint] requirement and test-case traceability'
+    & ./scripts/Test-Traceability.ps1
 
     Write-Stage '[lint] pre-commit configuration'
     $preCommit = Resolve-PinnedTool 'pre-commit' '4.6.2'

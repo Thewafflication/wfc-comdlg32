@@ -1,0 +1,70 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% Compile from the repository root so this path resolves to the pinned WSP
+% submodule.
+\input{wsp/testing/test-case-library.tex}
+
+\begin{document}
+
+\def\TCID{TC-0003}
+\def\TCTitle{The rules of the dialogs apart from any window}
+\def\TCPurpose{%
+  Verify the file title, filter index, error numbers, font-kind rule and
+  scripted-answer rules of \texttt{wfc/comdlg32/dialogs.hpp}.}
+\def\TCPriority{\TCPriorityHigh}
+
+\def\TCRequirementRef{REQ-0003, REQ-0004, REQ-0005}
+\def\TCDesignRef{Not applicable.}
+\def\TCFeatureRef{%
+  \texttt{include/wfc/comdlg32/dialogs.hpp}; test program
+  \texttt{tests/dialogs\_test.cpp}; CTest name
+  \texttt{TC-0003-comdlg32-dialogs}.}
+\def\TCTestTechnique{%
+  Equivalence classes and boundary values on each rule (ISO/IEC/IEEE 29119-4
+  specification-based techniques).}
+
+\def\TCPreconditions{The test program is built.}
+\def\TCEnvironment{%
+  Any host that builds the library; the header needs no window, no Windows
+  API and no evaluator.}
+\def\TCAssumptions{Not applicable.}
+
+\def\TCInputData{%
+  Paths \texttt{C:$\backslash$data$\backslash$notes.txt},
+  \texttt{/home/a/b.bas}, \texttt{plain.txt},
+  \texttt{C:$\backslash$dir$\backslash$} and the empty text; filter indexes
+  0, $-4$ and 3; font flags 0, 1, 2, 3 and 256; answers \texttt{cancel},
+  \texttt{Cancel}, \texttt{CANCEL}, \texttt{cancelled}, a path and the empty
+  text; the numbers \texttt{\&HFF00FF\&}, \texttt{ 12}, \texttt{\&h10} and
+  \texttt{x}; the font answers \texttt{Courier New,12,1,0}, \texttt{Times}
+  and \texttt{Arial,9,0,\&H1} over the base font Arial 10.}
+\def\TCInitialState{None; the rules are pure functions.}
+
+\def\TCProcedure{%
+  \begin{enumerate}
+    \item Check \texttt{file\_title} on each path.
+    \item Check that \texttt{kCancelled} is 32755 and \texttt{kNoFonts} is
+      24574.
+    \item Check \texttt{fonts\_available} on each flag value.
+    \item Check \texttt{normalized\_filter\_index} on each index.
+    \item Check \texttt{answer\_cancels} on each answer.
+    \item Check \texttt{scripted\_number} on each number.
+    \item Check \texttt{scripted\_font} on the three font answers.
+  \end{enumerate}}
+\def\TCExpectedResult{%
+  File titles are \texttt{notes.txt}, \texttt{b.bas}, \texttt{plain.txt}, the
+  empty text and the empty text. The error numbers match. Fonts are
+  available for flags 1, 2 and 3 and not for 0 or 256. The indexes give 1,
+  1 and 3. Only the three spellings of \texttt{cancel} cancel. The numbers
+  give 16711935, 12, 16 and 0. The first font answer gives Courier New, 12,
+  bold, not italic; the second keeps the size 10 and no bold; the third
+  gives size 9, not bold, italic. The program exits with code 0 and prints
+  \texttt{dialogs: ok}; a failed check prints \texttt{FAIL:} and the exit
+  code is 1.}
+\def\TCPostConditions{Not applicable; the test changes nothing.}
+
+\TCTemplate
+
+\end{document}

@@ -13,7 +13,7 @@ Written by hand from the documented members of the control.
 1 class(es), 65 members and 0 events are in
 the table. *Table* means the member exists with the Microsoft name, kind, type
 and dispatch id. *Behaviour* is implemented by the WFC evaluator and covered by
-its corpus and GUI tests (`TC-MP0006-*`, `TC-MP0010-*`); per-member behaviour
+its corpus and GUI tests (`TC-MP0006-*`, `TC-MP0002-corpus-*`); per-member behaviour
 status is tracked in WFC until the behaviour moves into this library (see the
 [roadmap](ROADMAP.md), 0.7).
 

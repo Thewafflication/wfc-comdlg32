@@ -44,12 +44,12 @@ against the WFC repository as the model.
 | CMake formatting | WSP-LANG-0010 | `.gersemirc` added; `CMakeLists.txt` and `cmake/` already conform | None |
 | Editor and whitespace | WSP-STYLE-0002 to 0004, `templates/source-style.editorconfig` | `.editorconfig` added; `.gitattributes` already sets LF | None |
 | 80-column check | WSP-STYLE-0001, `tools/Test-SourceStyle.ps1` | Passes for `src`, `include`, `tests`, `cmake`, `CMakeLists.txt`, `web/wasm_api.cpp`, `scripts/*.ps1` | Follow-up: 8 lines in `.github/workflows/ci.yml`, 1 line each in `scripts/capture_web.py` and `scripts/render_terminal.py`, 12 lines in `web/index.html` |
-| Commit gate | WSP-CHECK-0001, `processes/commit-checks.md`, `templates/pre-commit-config.yaml` | `.pre-commit-config.yaml` and `scripts/Invoke-{Lint,Build,Tests}.ps1` added; lint, x64 build and tests pass locally | Owner: run `pre-commit install` in each checkout |
+| Commit gate | WSP-CHECK-0001, `processes/commit-checks.md`, `templates/pre-commit-config.yaml` | `.pre-commit-config.yaml` and `scripts/Invoke-{Lint,Build,Tests}.ps1` added; lint, x64 build and tests pass locally. The gate starts with `wfc-gate-start` (`scripts/Start-CommitGate.ps1`): one gate at a time on the machine (`wfc-commit-gate.lock`, shared with the WFC repository) and the always-on-top test progress window (`scripts/Show-TestProgress.ps1`), which follows `out/test-progress.log` written by `scripts/Invoke-Tests.ps1`. The two scripts are identical to the WFC copies | Owner: run `pre-commit install` in each checkout |
 | Pinned tools | WSP-CHECK-0007 | `requirements-dev.txt` (pre-commit 4.6.2, gersemi 0.29.2, clang-format 22.1.3) | None |
 | PowerShell analysis | WSP-LANG-0007 | `PSScriptAnalyzerSettings.psd1`; the scripts pass | None |
 | CI runs the gate | WSP-CHECK-0001 | CI has a report-only `wsp-style` job | Follow-up: run `scripts/Invoke-Lint.ps1` in CI and make it blocking |
-| Requirements | `requirements/requirements-management.md`, `style/requirements-writing.md` | One requirement, REQ-0304, `Proposed`, moved from WFC | Decision: numbering of this library's requirements (see below); split REQ-0304 into verifiable statements |
-| Test-case traceability | WSP-TRACE, `tools/Test-Traceability.ps1` | Not done; the tool expects `req-*.md`, `tc-*.tex` and `tc-NNNN` test scripts | Follow-up: give the corpus case `207-win-dialogs-classes` and the C++ tests stable `TC-` identifiers; the requirement's `Verification` section names `196-ocx-winsock-dialog`, which is not in this repository |
+| Requirements | `requirements/requirements-management.md`, `style/requirements-writing.md` | Done: REQ-0001 to REQ-0006 (`Proposed`), numbered in the library's own namespace; the former REQ-0304 was split into verifiable statements; old IDs in `docs/id-map.md` | Review the statements; move them to `Approved` |
+| Test-case traceability | WSP-TRACE, `tools/Test-Traceability.ps1` | Done: `scripts/Test-Traceability.ps1` passes for 6 requirements, 5 test specifications (`tests/tc-NNNN-*.tex`) and 4 runners (`tests/run-tc-NNNN-*.ps1`); TC-0005 is manual (modal system dialogs), hence `-AllowManualTests`; the check runs in `scripts/Invoke-Lint.ps1` | Follow-up: a runner for TC-0005 is not possible without a person |
 | Docs structure | `style/documentation-style.md`, `documentation/` | `README.md`, `ROADMAP.md`, `COMPATIBILITY.md`, `docs/` | Follow-up: documentation manifest if a PDF release is wanted |
 | Versioning and release | `processes/release-readiness-template.md`, `style/windows-version-resources.md` | `VERSION` (0.6.1), `version.rc.in`, release workflow shared with WFC | Release-readiness record at the first release |
 | Static analysis | `style/static-analysis.md` | Not done | Follow-up |
@@ -61,6 +61,7 @@ against the WFC repository as the model.
 | Item | Disposition |
 | --- | --- |
 | 80-column style (WSP-STYLE-0001) | The C++, CMake and PowerShell sources pass (`scripts/Invoke-Lint.ps1`); the workflow, two Python scripts and the web page are left (see the gap analysis) |
-| Requirements | Adopted: `requirements/` (moved from WFC) |
-| Traceability check | Planned (roadmap, WSP track); needs `TC-` identifiers first |
+| Requirements | `requirements/requirements-management.md`, `style/requirements-writing.md` | Done: REQ-0001 to REQ-0006 (`Proposed`), numbered in the library's own namespace; the former REQ-0304 was split into verifiable statements; old IDs in `docs/id-map.md` | Review the statements; move them to `Approved` |
+| Traceability check | Done locally (lint stage); CI runs it in the `wsp-style` job |
+| Identifiers | `REQ-NNNN` and `TC-NNNN` in the library's own namespace, CTest tests named `TC-NNNN-<short-name>`; the mapping from the WFC-era identifiers is `docs/id-map.md` |
 | Signing | Planned for the first release |

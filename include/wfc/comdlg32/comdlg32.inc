@@ -1,6 +1,6 @@
 // Native replacement for the Common Dialog control (`comdlg32.ocx`, library
-// MSComDlg; MP-0008, REQ-0304). Included once by forms.cpp after ocx_support.inc,
-// inside namespace wfc::detail. Internal to the WFC evaluator; not part of the
+// MSComDlg; MP-0008, REQ-0002). Included once by forms.cpp after
+// ocx_support.inc, inside namespace wfc::detail. Internal to the WFC evaluator; not part of the
 // public API.
 
 // ----- Common Dialog -------------------------------------------------------------

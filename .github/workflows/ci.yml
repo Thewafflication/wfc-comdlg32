@@ -196,3 +196,7 @@ jobs:
         run: |
           & ./wsp/tools/Test-SourceStyle.ps1 -RepositoryRoot $PWD `
             -SourcePath @('src', 'include', 'tests', 'CMakeLists.txt')
+
+      - name: Check the traceability
+        shell: pwsh
+        run: ./scripts/Test-Traceability.ps1

@@ -1,0 +1,64 @@
+\documentclass[letterpaper]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% Compile from the repository root so this path resolves to the pinned WSP
+% submodule.
+\input{wsp/testing/test-case-library.tex}
+
+\begin{document}
+
+\def\TCID{TC-0005}
+\def\TCTitle{The system dialogs open and return the choice (manual)}
+\def\TCPurpose{%
+  Verify by hand what the modal system dialogs cannot show to an automated
+  test: that \texttt{ShowOpen}, \texttt{ShowColor} and \texttt{ShowFont}
+  open the Windows dialogs and that the choice and a cancel reach the
+  control.}
+\def\TCPriority{\TCPriorityMedium}
+
+\def\TCRequirementRef{REQ-0006}
+\def\TCDesignRef{Not applicable.}
+\def\TCFeatureRef{%
+  Example \texttt{examples/dialogs} (project \texttt{dialogs.vbp}); the
+  Win32 demonstration \texttt{examples/wine/dialogs\_demo.c}. This test is
+  manual; the repository has no runner for it.}
+\def\TCTestTechnique{%
+  Manual scenario test: a person follows the procedure and observes the
+  result.}
+
+\def\TCPreconditions{%
+  A WFC executable and an interactive Windows (or Wine) session.}
+\def\TCEnvironment{%
+  Windows desktop, or Linux with Wine and a display; the window of the
+  example is shown.}
+\def\TCAssumptions{The tester can see and click the dialogs.}
+
+\def\TCInputData{%
+  A \texttt{.txt} file to choose, a colour and a font in the dialogs; the
+  Cancel button of each dialog.}
+\def\TCInitialState{%
+  The example is started fresh with
+  \texttt{wfc run examples/dialogs/dialogs.vbp --gui}; its list shows the
+  line ``Choose a dialog; the result is listed here.''.}
+
+\def\TCProcedure{%
+  \begin{enumerate}
+    \item Click \texttt{Open...}, choose a \texttt{.txt} file and confirm.
+    \item Click \texttt{Open...} again and cancel.
+    \item Click \texttt{Color...}, choose a colour and confirm.
+    \item Click \texttt{Font...}, choose a font and size and confirm.
+    \item Click \texttt{Color...} and cancel.
+  \end{enumerate}}
+\def\TCExpectedResult{%
+  Step 1 lists \texttt{Open:} with the full path and the file name. Step 2
+  lists \texttt{Open: cancelled}. Step 3 lists \texttt{Color: \&H} and the
+  hexadecimal colour of the choice. Step 4 lists \texttt{Font:} with the
+  chosen name and size. Step 5 adds no line (the cancel raised an error that
+  the program ignores) and the colour of the earlier choice is unchanged.
+  Each dialog is the system dialog of the host.}
+\def\TCPostConditions{Close the example; nothing else is changed.}
+
+\TCTemplate
+
+\end{document}
