@@ -6,8 +6,23 @@
 # the one in VERSION and is stamped into the DLL's version resource.
 #
 # Parent project variables used when present: WFC_OCX_SHARED (the default of
-# WFC_COMDLG32_SHARED) and the functions wfc_enable_strict_warnings and
-# wsp_enable_hardening.
+# WFC_COMDLG32_SHARED), WFC_COMDLG32_TEST_PREFIX (below) and the functions
+# wfc_enable_strict_warnings and wsp_enable_hardening.
+#
+# CTest names: inside this repository a test is named TC-NNNN-<name>. When
+# another project mounts the library (the WFC repository adds it as
+# lib/wfc-comdlg32), every name is WFC_COMDLG32_TEST_PREFIX + TC-NNNN-<name>,
+# the prefix being "wfc-comdlg32-" unless the including project sets the
+# variable (also to the empty string) before add_subdirectory. The names of
+# different libraries then never collide. The TC-NNNN identifier is the same
+# in both. Labels do not change.
+if(NOT DEFINED WFC_COMDLG32_TEST_PREFIX)
+  if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(WFC_COMDLG32_TEST_PREFIX "")
+  else()
+    set(WFC_COMDLG32_TEST_PREFIX "wfc-comdlg32-")
+  endif()
+endif()
 
 # Standalone build: the library outside WFC. WFC itself adds this directory
 # with add_subdirectory and supplies the project, CTest and the WSP hardening.
@@ -140,9 +155,12 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
   if(COMMAND wsp_enable_hardening)
     wsp_enable_hardening(comdlg32_tables_test)
   endif()
-  add_test(NAME TC-0002-comdlg32-tables COMMAND comdlg32_tables_test)
+  add_test(
+    NAME ${WFC_COMDLG32_TEST_PREFIX}TC-0002-comdlg32-tables
+    COMMAND comdlg32_tables_test
+  )
   set_tests_properties(
-    TC-0002-comdlg32-tables
+    ${WFC_COMDLG32_TEST_PREFIX}TC-0002-comdlg32-tables
     PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
@@ -162,9 +180,12 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
   if(COMMAND wsp_enable_hardening)
     wsp_enable_hardening(comdlg32_dialogs_test)
   endif()
-  add_test(NAME TC-0003-comdlg32-dialogs COMMAND comdlg32_dialogs_test)
+  add_test(
+    NAME ${WFC_COMDLG32_TEST_PREFIX}TC-0003-comdlg32-dialogs
+    COMMAND comdlg32_dialogs_test
+  )
   set_tests_properties(
-    TC-0003-comdlg32-dialogs
+    ${WFC_COMDLG32_TEST_PREFIX}TC-0003-comdlg32-dialogs
     PROPERTIES LABELS "unit;mp-0010;comdlg32" TIMEOUT 120
   )
 
@@ -182,13 +203,13 @@ if(BUILD_TESTING AND WFC_BUILD_TESTS)
       wsp_enable_hardening(comdlg32_dll_test)
     endif()
     add_test(
-      NAME TC-0001-comdlg32-dll
+      NAME ${WFC_COMDLG32_TEST_PREFIX}TC-0001-comdlg32-dll
       COMMAND
         comdlg32_dll_test "$<TARGET_FILE:wfc_comdlg32>"
         "${WFC_COMDLG32_VERSION}" "${WFC_LIB_TARGET}"
     )
     set_tests_properties(
-      TC-0001-comdlg32-dll
+      ${WFC_COMDLG32_TEST_PREFIX}TC-0001-comdlg32-dll
       PROPERTIES
         LABELS "integration;mp-0010;comdlg32"
         RESOURCE_LOCK registry
@@ -217,14 +238,14 @@ if(
   find_program(WFC_PWSH NAMES pwsh)
   if(WFC_EXECUTABLE AND WFC_PWSH)
     add_test(
-      NAME TC-0004-win-dialogs-classes
+      NAME ${WFC_COMDLG32_TEST_PREFIX}TC-0004-win-dialogs-classes
       COMMAND
         "${WFC_PWSH}" -NoProfile -File
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/run-tc-0004-win-dialogs-classes.ps1"
         -Wfc "${WFC_EXECUTABLE}"
     )
     set_tests_properties(
-      TC-0004-win-dialogs-classes
+      ${WFC_COMDLG32_TEST_PREFIX}TC-0004-win-dialogs-classes
       PROPERTIES LABELS "integration;comdlg32" TIMEOUT 120
     )
   else()

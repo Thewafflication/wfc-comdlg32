@@ -63,5 +63,5 @@ against the WFC repository as the model.
 | 80-column style (WSP-STYLE-0001) | The C++, CMake and PowerShell sources pass (`scripts/Invoke-Lint.ps1`); the workflow and two Python scripts are left (see the gap analysis) |
 | Requirements | `requirements/requirements-management.md`, `style/requirements-writing.md` | Done: REQ-0001 to REQ-0006 (`Proposed`), numbered in the library's own namespace; the former REQ-0304 was split into verifiable statements; old IDs in `docs/id-map.md` | Review the statements; move them to `Approved` |
 | Traceability check | Done locally (lint stage); CI runs it in the `wsp-style` job |
-| Identifiers | `REQ-NNNN` and `TC-NNNN` in the library's own namespace, CTest tests named `TC-NNNN-<short-name>`; the mapping from the WFC-era identifiers is `docs/id-map.md` |
+| Identifiers | `REQ-NNNN` and `TC-NNNN` in the library's own namespace, CTest tests named `TC-NNNN-<short-name>` (`wfc-comdlg32-TC-NNNN-<short-name>` when another project mounts the library; see `WFC_COMDLG32_TEST_PREFIX` in `CMakeLists.txt`); the mapping from the WFC-era identifiers is `docs/id-map.md` |
 | Signing | Planned for the first release |

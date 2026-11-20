@@ -38,6 +38,12 @@ evaluator in WFC and are listed as informative text in REQ-0002.
 `TC-MP0002-corpus-207-win-dialogs-classes` is still the name under which the
 WFC repository registers the corpus case (WFC names every corpus case that
 way); `TC-0004-win-dialogs-classes` is the name in this repository.
+
+The CTest names above are the ones of this repository. When another project
+mounts the library (WFC adds it as `lib/wfc-comdlg32`) every name carries the
+prefix `wfc-comdlg32-` (`wfc-comdlg32-TC-0002-comdlg32-tables`); the
+`TC-NNNN` identifier is the same. `WFC_COMDLG32_TEST_PREFIX` in
+`CMakeLists.txt` sets the prefix.
 The corpus case files keep their names.
 
 The old requirement named the corpus case `196-ocx-winsock-dialog`; that case
