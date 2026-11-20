@@ -108,7 +108,7 @@ jobs:
           for dialog in open color font; do
             convert out/$dialog.png -fuzz 2% -trim +repage out/$dialog-trim.png
           done
-          convert out/open-trim.png out/color-trim.png out/font-trim.png             -background '#202020' -gravity center +append             docs/images/linux-dialogs.png
+          convert out/open-trim.png out/color-trim.png out/font-trim.png             -bordercolor '#11141F' -border 14 -background '#11141F'             -gravity center +append -bordercolor '#11141F' -border 10             docs/images/linux-dialogs.png
 
       - uses: actions/upload-artifact@v4
         if: matrix.arch == 'x64'

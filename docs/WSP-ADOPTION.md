@@ -43,7 +43,7 @@ against the WFC repository as the model.
 | C++ formatting | WSP-LANG-0002, `templates/source-style-configurations.md` | `.clang-format` added; the C++ sources already conform, `web/wasm_api.cpp` reformatted (3 lines) | None |
 | CMake formatting | WSP-LANG-0010 | `.gersemirc` added; `CMakeLists.txt` and `cmake/` already conform | None |
 | Editor and whitespace | WSP-STYLE-0002 to 0004, `templates/source-style.editorconfig` | `.editorconfig` added; `.gitattributes` already sets LF | None |
-| 80-column check | WSP-STYLE-0001, `tools/Test-SourceStyle.ps1` | Passes for `src`, `include`, `tests`, `cmake`, `CMakeLists.txt`, `web/wasm_api.cpp`, `scripts/*.ps1` | Follow-up: 8 lines in `.github/workflows/ci.yml`, 1 line each in `scripts/capture_web.py` and `scripts/render_terminal.py`, 12 lines in `web/index.html` |
+| 80-column check | WSP-STYLE-0001, `tools/Test-SourceStyle.ps1` | Passes for `src`, `include`, `tests`, `cmake`, `CMakeLists.txt`, `web/wasm_api.cpp`, `web/index.html`, `scripts/*.ps1` | Follow-up: 8 lines in `.github/workflows/ci.yml`, 1 line each in `scripts/capture_web.py` and `scripts/render_terminal.py` |
 | Commit gate | WSP-CHECK-0001, `processes/commit-checks.md`, `templates/pre-commit-config.yaml` | `.pre-commit-config.yaml` and `scripts/Invoke-{Lint,Build,Tests}.ps1` added; lint, x64 build and tests pass locally. The gate starts with `wfc-gate-start` (`scripts/Start-CommitGate.ps1`): one gate at a time on the machine (`wfc-commit-gate.lock`, shared with the WFC repository) and the always-on-top test progress window (`scripts/Show-TestProgress.ps1`), which follows `out/test-progress.log` written by `scripts/Invoke-Tests.ps1`. The two scripts are identical to the WFC copies | Owner: run `pre-commit install` in each checkout |
 | Pinned tools | WSP-CHECK-0007 | `requirements-dev.txt` (pre-commit 4.6.2, gersemi 0.29.2, clang-format 22.1.3) | None |
 | PowerShell analysis | WSP-LANG-0007 | `PSScriptAnalyzerSettings.psd1`; the scripts pass | None |
@@ -60,7 +60,7 @@ against the WFC repository as the model.
 
 | Item | Disposition |
 | --- | --- |
-| 80-column style (WSP-STYLE-0001) | The C++, CMake and PowerShell sources pass (`scripts/Invoke-Lint.ps1`); the workflow, two Python scripts and the web page are left (see the gap analysis) |
+| 80-column style (WSP-STYLE-0001) | The C++, CMake and PowerShell sources pass (`scripts/Invoke-Lint.ps1`); the workflow and two Python scripts are left (see the gap analysis) |
 | Requirements | `requirements/requirements-management.md`, `style/requirements-writing.md` | Done: REQ-0001 to REQ-0006 (`Proposed`), numbered in the library's own namespace; the former REQ-0304 was split into verifiable statements; old IDs in `docs/id-map.md` | Review the statements; move them to `Approved` |
 | Traceability check | Done locally (lint stage); CI runs it in the `wsp-style` job |
 | Identifiers | `REQ-NNNN` and `TC-NNNN` in the library's own namespace, CTest tests named `TC-NNNN-<short-name>`; the mapping from the WFC-era identifiers is `docs/id-map.md` |

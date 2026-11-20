@@ -26,11 +26,12 @@ Push-Location $root
 try {
     Write-Stage '[lint] WSP physical source style' -Reset
     # .github and the Python scripts are not yet wrapped to 80 columns; the
-    # web page is exempt (docs/WSP-ADOPTION.md lists the follow-up).
+    # follow-up is listed in docs/WSP-ADOPTION.md.
     $styleScope = @(
         'src', 'include', 'tests', 'cmake', 'CMakeLists.txt',
-        'web/wasm_api.cpp', '.clang-format', '.editorconfig', '.gersemirc',
-        '.gitattributes', '.pre-commit-config.yaml',
+        'web/wasm_api.cpp', 'web/index.html', '.clang-format',
+        '.editorconfig', '.gersemirc', '.gitattributes',
+        '.pre-commit-config.yaml',
         'PSScriptAnalyzerSettings.psd1'
     ) + @(Get-ChildItem -File scripts -Filter '*.ps*1' |
             ForEach-Object { "scripts/$($_.Name)" })

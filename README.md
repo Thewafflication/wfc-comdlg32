@@ -19,13 +19,15 @@ the parent default is `WFC_OCX_SHARED`).
 
 ![The Common Dialog example (`examples/dialogs`).](docs/images/common-dialog.png)
 
-The Common Dialog example (`examples/dialogs`). Run it with [WFC](https://github.com/Thewafflication/wfc):
+The Common Dialog example (`examples/dialogs`), in the look of the WFC games
+(dark navy, raised panel, teal accent; `modTheme.bas` is a trimmed copy of the
+games' theme module). Run it with [WFC](https://github.com/Thewafflication/wfc):
 
 ```
 wfc run examples/dialogs/dialogs.vbp --gui
 ```
 
-The images are made with `wfc run ... --gui --screenshots <dir>`.
+The image is made with `wfc run ... --gui --screenshots <dir>`.
 
 ### Linux (Wine)
 
