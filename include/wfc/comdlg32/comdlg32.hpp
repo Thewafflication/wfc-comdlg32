@@ -3,7 +3,7 @@
 //
 // The table is plain data. It is linked statically into the program or, when
 // the library is built shared (WFC_COMDLG32_SHARED), loaded from
-// wfccomdlg32.dll; only the accessor crosses the library boundary.
+// comdlg32.ocx; only the accessor crosses the library boundary.
 
 #ifndef WFC_COMDLG32_COMDLG32_HPP
 #define WFC_COMDLG32_COMDLG32_HPP

@@ -10,12 +10,12 @@ REQ-0304 (see `docs/id-map.md`).
 
 ## Scope
 
-`wfccomdlg32.dll`, built with `WFC_COMDLG32_SHARED=ON`, on Windows. The static
+`comdlg32.ocx`, built with `WFC_COMDLG32_SHARED=ON`, on Windows. The static
 library has no registration.
 
 ## Requirement
 
-1. `wfccomdlg32.dll` shall export `DllGetClassObject`, `DllCanUnloadNow`,
+1. `comdlg32.ocx` shall export `DllGetClassObject`, `DllCanUnloadNow`,
    `DllRegisterServer` and `DllUnregisterServer`.
 2. The version resource of the DLL shall carry the version of `VERSION` and
    the target of `TARGET`.

@@ -2,7 +2,7 @@
 #
 # The member table is written by hand from the documented members.
 # The table is built static by default; WFC_COMDLG32_SHARED builds it as
-# wfccomdlg32.dll so a program can load it at run time instead. The version is
+# comdlg32.ocx so a program can load it at run time instead. The version is
 # the one in VERSION and is stamped into the DLL's version resource.
 #
 # Parent project variables used when present: WFC_OCX_SHARED (the default of
@@ -54,7 +54,7 @@ if(NOT DEFINED WFC_OCX_SHARED)
 endif()
 option(
   WFC_COMDLG32_SHARED
-  "Build the WFC comdlg32 library as wfccomdlg32.dll"
+  "Build the WFC comdlg32 library as comdlg32.ocx"
   ${WFC_OCX_SHARED}
 )
 
@@ -90,6 +90,7 @@ if(WFC_COMDLG32_SHARED AND WIN32)
     @ONLY
   )
   set(WFC_LIB_NAME wfccomdlg32)
+  set(WFC_LIB_FILE comdlg32.ocx)
   set(WFC_LIB_DESCRIPTION "WFC Common Dialog")
   configure_file(
     version.rc.in
@@ -114,7 +115,10 @@ if(WFC_COMDLG32_SHARED AND WIN32)
   set_target_properties(
     wfc_comdlg32
     PROPERTIES
-      OUTPUT_NAME wfccomdlg32
+      OUTPUT_NAME comdlg32
+      SUFFIX ".ocx"
+      ARCHIVE_OUTPUT_NAME wfccomdlg32
+      PDB_NAME wfccomdlg32
       VERSION "${WFC_COMDLG32_VERSION}"
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
   )
@@ -136,7 +140,7 @@ endif()
 
 # --- Tests --------------------------------------------------------------------
 # The table (any build) and, in the shared build, the DLL itself: a C program
-# loads wfccomdlg32.dll, checks its COM entry points and version resource, and
+# loads comdlg32.ocx, checks its COM entry points and version resource, and
 # registers and unregisters it in the registry of the current user.
 if(BUILD_TESTING AND WFC_BUILD_TESTS)
   add_executable(comdlg32_tables_test tests/comdlg32_tables_test.cpp)

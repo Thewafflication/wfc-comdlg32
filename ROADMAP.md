@@ -1,6 +1,6 @@
 # wfc-comdlg32 roadmap
 
-Library: **Common Dialog** (`wfccomdlg32.dll`), the WFC replacement for `comdlg32.ocx`.
+Library: **Common Dialog** (`comdlg32.ocx`), the WFC replacement for `comdlg32.ocx`.
 Current version **0.6.1**, targeting **COMDLG32.OCX 6.1.98 (Visual Basic 6.0 SP6)**.
 
 The version stays `0.<target major>.<target minor>` until the library matches

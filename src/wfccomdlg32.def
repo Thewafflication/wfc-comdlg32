@@ -1,4 +1,4 @@
-LIBRARY wfccomdlg32
+LIBRARY comdlg32.ocx
 EXPORTS
     DllRegisterServer PRIVATE
     DllUnregisterServer PRIVATE

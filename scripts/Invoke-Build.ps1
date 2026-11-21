@@ -3,7 +3,7 @@
 Runs the wfc-comdlg32 canonical build stage.
 .DESCRIPTION
 Configures and builds the x64 Debug tree in out/build, with the library as
-wfccomdlg32.dll so the DLL test case runs too. CI builds the other
+comdlg32.ocx so the DLL test case runs too. CI builds the other
 architectures and the static library.
 .EXAMPLE
 pwsh -NoProfile -File scripts/Invoke-Build.ps1
