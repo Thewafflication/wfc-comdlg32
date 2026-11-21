@@ -1,6 +1,6 @@
 # wfc-comdlg32: compatibility with comdlg32.ocx
 
-Target: **COMDLG32.OCX 6.1.98 (Visual Basic 6.0 SP6)**. Library version: **0.6.1**.
+Target: **COMDLG32.OCX 6.1.98 (Visual Basic 6.0 SP6)**. Library version: **0.6.2**.
 
 Written by hand from the documented members of the control.
 
